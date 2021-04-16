@@ -14,7 +14,7 @@ namespace CustomReadLine
             var builder = new StringBuilder();
             var cki = Console.ReadKey(true);
             int index = 0;
-            Tuple<int, int> startPosition;
+            (int left, int top) startPosition;
 
             while (cki.Key != ConsoleKey.Enter && cki.Key != ConsoleKey.Escape)
             {
@@ -74,9 +74,9 @@ namespace CustomReadLine
             isEsc = false;
 
             startPosition = GetStartPosition(index);
-            var endPosition = GetEndPosition(startPosition.Item2, builder.Length);
+            var endPosition = GetEndPosition(startPosition.left, builder.Length);
             var left = 0;
-            var top = startPosition.Item1 + endPosition.Item1 + 1;
+            var top = startPosition.top + endPosition.top + 1;
 
             Console.SetCursorPosition(left, top);
 
@@ -94,7 +94,7 @@ namespace CustomReadLine
                 index = 0;
 
                 var startPosition = GetStartPosition(previousIndex);
-                Console.SetCursorPosition(startPosition.Item2, startPosition.Item1);
+                Console.SetCursorPosition(startPosition.left, startPosition.top);
 
                 return;
             }
@@ -118,9 +118,9 @@ namespace CustomReadLine
                 index = builder.Length;
 
                 var startPosition = GetStartPosition(previousIndex);
-                var endPosition = GetEndPosition(startPosition.Item2, builder.Length);
-                var top = startPosition.Item1 + endPosition.Item1;
-                var left = endPosition.Item2;
+                var endPosition = GetEndPosition(startPosition.left, builder.Length);
+                var top = startPosition.top + endPosition.top;
+                var left = endPosition.left;
 
                 Console.SetCursorPosition(left, top);
 
@@ -150,7 +150,7 @@ namespace CustomReadLine
                 index = 0;
                 Console.Write(builder.ToString());
 
-                Console.SetCursorPosition(startPosition.Item2, startPosition.Item1);
+                Console.SetCursorPosition(startPosition.left, startPosition.top);
 
                 return;
             }
@@ -169,16 +169,14 @@ namespace CustomReadLine
             builder.Insert(previousIndex, cki.KeyChar);
 
             var startPosition = GetStartPosition(previousIndex);
-            Console.SetCursorPosition(startPosition.Item2, startPosition.Item1);
-
+            Console.SetCursorPosition(startPosition.left, startPosition.top);
             Console.Write(builder.ToString());
 
             GoBackToCurrentPosition(index, startPosition);
         }
 
-        private static Tuple<int, int> GetStartPosition(int previousIndex)
+        private static (int left, int top) GetStartPosition(int previousIndex)
         {
-            //Rename to top and left
             int top;
             int left;
 
@@ -201,34 +199,34 @@ namespace CustomReadLine
                 }
             }
 
-            return new Tuple<int, int>(top, left);
+            return (left, top);
         }
 
-        private static void GoBackToCurrentPosition(int index, Tuple<int, int> startPosition)
+        private static void GoBackToCurrentPosition(int index, (int left, int top) startPosition)
         {
-            var rowsToGo = (index + startPosition.Item2) / Console.BufferWidth;
+            var rowsToGo = (index + startPosition.left) / Console.BufferWidth;
             var rowIndex = index - rowsToGo * Console.BufferWidth;
 
-            var left = startPosition.Item2 + rowIndex;
-            var top = startPosition.Item1 + rowsToGo;
+            var left = startPosition.left + rowIndex;
+            var top = startPosition.top + rowsToGo;
 
             Console.SetCursorPosition(left, top);
         }
 
-        private static Tuple<int, int> GetEndPosition(int startColumn, int builderLength)
+        private static (int left, int top) GetEndPosition(int startColumn, int builderLength)
         {
             var cursorTop = (builderLength + startColumn) / Console.BufferWidth;
             var cursorLeft = startColumn + (builderLength - cursorTop * Console.BufferWidth);
 
-            return new Tuple<int, int>(cursorTop, cursorLeft);
+            return (cursorLeft, cursorTop);
         }
 
-        private static void ErasePrint(StringBuilder builder, Tuple<int, int> startPosition)
+        private static void ErasePrint(StringBuilder builder, (int left, int top) startPosition)
         {
-            Console.SetCursorPosition(startPosition.Item2, startPosition.Item1);
+            Console.SetCursorPosition(startPosition.left, startPosition.top);
             Console.Write(new string(Enumerable.Range(0, builder.Length).Select(o => ' ').ToArray()));
 
-            Console.SetCursorPosition(startPosition.Item2, startPosition.Item1);
+            Console.SetCursorPosition(startPosition.left, startPosition.top);
         }
     }
 }

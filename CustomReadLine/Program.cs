@@ -24,9 +24,9 @@ namespace CustomReadLine
             {
                 Console.WriteLine("\nThis is what you wrote using Read.CancelableReadLine()");
                 Console.WriteLine("Call from start of screen");
-                Console.WriteLine(value1);
+                Console.WriteLine($"'{value1}'");
                 Console.WriteLine("\nCall from middle of text");
-                Console.WriteLine(value2);
+                Console.WriteLine($"'{value2}'");
                 Console.WriteLine("\nPress any key to exit");
                 Console.ReadKey();
             }
