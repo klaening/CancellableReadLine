@@ -11,7 +11,6 @@ namespace CustomReadLine
 
             Console.WriteLine("Cancelable ReadLine\n");
 
-
             Console.WriteLine("Calling at start of screen");
             var value1 = CustomReadLine.CancelableReadLine(out var isEsc1);
 
@@ -27,6 +26,9 @@ namespace CustomReadLine
                 Console.WriteLine($"'{value1}'");
                 Console.WriteLine("\nCall from middle of text");
                 Console.WriteLine($"'{value2}'");
+
+                Console.WriteLine("Normal ReadLine");
+                Console.ReadLine();
                 Console.WriteLine("\nPress any key to exit");
                 Console.ReadKey();
             }

@@ -48,6 +48,16 @@ namespace CustomReadLine
 
                     BackSpace(ref index, cki, builder);
                 }
+                else if (cki.Key == ConsoleKey.Delete)
+                {
+                    if (index >= builder.Length - 1)
+                    {
+                        cki = Console.ReadKey(true);
+                        continue;
+                    }
+
+                    Delete(ref index, cki, builder);
+                }
                 else
                 {
                     if (cki.KeyChar == '\0')
@@ -156,6 +166,26 @@ namespace CustomReadLine
             }
 
             builder.Remove(index, 1);
+            Console.Write(builder.ToString());
+
+            GoBackToCurrentPosition(index, startPosition);
+        }
+
+        private static void Delete(ref int index, ConsoleKeyInfo cki, StringBuilder builder)
+        {
+            var startPosition = GetStartPosition(index);
+            ErasePrint(builder, startPosition);
+
+            if (cki.Modifiers == ConsoleModifiers.Control)
+            {
+                builder.Remove(index + 1, builder.Length - (index + 1));
+                Console.Write(builder.ToString());
+
+                GoBackToCurrentPosition(index, startPosition);
+                return;
+            }
+
+            builder.Remove(index + 1, 1);
             Console.Write(builder.ToString());
 
             GoBackToCurrentPosition(index, startPosition);
