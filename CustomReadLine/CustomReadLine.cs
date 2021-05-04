@@ -7,8 +7,6 @@ namespace CustomReadLine
 {
     public static class CustomReadLine
     {
-        //It ain't pretty but it seems to do the trick
-
         public static string CancelableReadLine(out bool isEsc)
         {
             var builder = new StringBuilder();
@@ -50,7 +48,7 @@ namespace CustomReadLine
                 }
                 else if (cki.Key == ConsoleKey.Delete)
                 {
-                    if (index >= builder.Length - 1)
+                    if (index >= builder.Length)
                     {
                         cki = Console.ReadKey(true);
                         continue;
@@ -154,17 +152,6 @@ namespace CustomReadLine
             var startPosition = GetStartPosition(previousIndex);
             ErasePrint(builder, startPosition);
 
-            if (cki.Modifiers == ConsoleModifiers.Control)
-            {
-                builder.Remove(0, previousIndex);
-                index = 0;
-                Console.Write(builder.ToString());
-
-                Console.SetCursorPosition(startPosition.left, startPosition.top);
-
-                return;
-            }
-
             builder.Remove(index, 1);
             Console.Write(builder.ToString());
 
@@ -178,14 +165,14 @@ namespace CustomReadLine
 
             if (cki.Modifiers == ConsoleModifiers.Control)
             {
-                builder.Remove(index + 1, builder.Length - (index + 1));
+                builder.Remove(index, builder.Length - index);
                 Console.Write(builder.ToString());
 
                 GoBackToCurrentPosition(index, startPosition);
                 return;
             }
 
-            builder.Remove(index + 1, 1);
+            builder.Remove(index, 1);
             Console.Write(builder.ToString());
 
             GoBackToCurrentPosition(index, startPosition);
