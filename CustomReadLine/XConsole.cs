@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace CustomReadLine
 {
-    public static class CustomReadLine
+    public static class XConsole
     {
-        public static string CancelableReadLine(out bool isEsc)
+        public static string CancellableReadLine(out bool isEsc)
         {
             var builder = new StringBuilder();
             var cki = Console.ReadKey(true);
