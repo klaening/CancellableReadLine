@@ -13,26 +13,29 @@ namespace CustomReadLine
             Console.WriteLine("====================\n");
 
             Console.WriteLine("Calling at start of screen");
-            var value1 = XConsole.CancellableReadLine(out var isEsc1);
+            var value1 = XConsole.CancellableReadLine(out var isCancelled);
 
             Console.WriteLine("\nCalling in middle of text");
             Console.Write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
 
-            var value2 = XConsole.CancellableReadLine(out var isEsc2);
+            var value2 = XConsole.CancellableReadLine(out isCancelled);
 
-            if (!isEsc1 && !isEsc2)
+            if (isCancelled)
             {
-                Console.WriteLine("\nThis is what you wrote using CancellableReadLine()");
-                Console.WriteLine("Call from start of screen");
-                Console.WriteLine($"'{value1}'");
-                Console.WriteLine("\nCall from middle of text");
-                Console.WriteLine($"'{value2}'");
-
-                Console.WriteLine("Normal ReadLine");
-                Console.ReadLine();
-                Console.WriteLine("\nPress any key to exit");
-                Console.ReadKey();
+                Console.WriteLine("\nYou cancelled the request!");
+                return;
             }
+
+            Console.WriteLine("\nThis is what you wrote using CancellableReadLine()");
+            Console.WriteLine("Call from start of screen");
+            Console.WriteLine($"'{value1}'");
+            Console.WriteLine("\nCall from middle of text");
+            Console.WriteLine($"'{value2}'");
+
+            Console.WriteLine("Normal ReadLine");
+            Console.ReadLine();
+            Console.WriteLine("\nPress any key to exit");
+            Console.ReadKey();
         }
     }
 }

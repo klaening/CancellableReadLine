@@ -6,14 +6,15 @@ namespace CustomReadLine
 {
     public static class XConsole
     {
-        public static string CancellableReadLine(out bool isEsc)
+        public static string CancellableReadLine(out bool isCancelled)
         {
+            var cancelKey = ConsoleKey.Escape;
             var builder = new StringBuilder();
             var cki = Console.ReadKey(true);
             int index = 0;
             (int left, int top) startPosition;
 
-            while (cki.Key != ConsoleKey.Enter && cki.Key != ConsoleKey.Escape)
+            while (cki.Key != ConsoleKey.Enter && cki.Key != cancelKey)
             {
                 if (cki.Key == ConsoleKey.LeftArrow)
                 {
@@ -55,6 +56,11 @@ namespace CustomReadLine
 
                     Delete(ref index, cki, builder);
                 }
+                else if (cki.Key == ConsoleKey.Tab)
+                {
+                    cki = Console.ReadKey(true);
+                    continue;
+                }
                 else
                 {
                     if (cki.KeyChar == '\0')
@@ -69,16 +75,16 @@ namespace CustomReadLine
                 cki = Console.ReadKey(true);
             }
 
-            if (cki.Key == ConsoleKey.Escape)
+            if (cki.Key == cancelKey)
             {
                 startPosition = GetStartPosition(index);
                 ErasePrint(builder, startPosition);
 
-                isEsc = true;
+                isCancelled = true;
                 return string.Empty;
             }
 
-            isEsc = false;
+            isCancelled = false;
 
             startPosition = GetStartPosition(index);
             var endPosition = GetEndPosition(startPosition.left, builder.Length);
