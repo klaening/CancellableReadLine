@@ -151,16 +151,22 @@ namespace CustomReadLine
 
         private static void BackSpace(ref int index, ConsoleKeyInfo cki, StringBuilder builder)
         {
-            var previousIndex = index;
-            index--;
+            LeftArrow(ref index, cki);
+            
+            var currentPosition = Console.GetCursorPosition();
+            ErasePrintFrom(builder, index);
 
-            var startPosition = GetStartPosition(previousIndex);
-            ErasePrint(builder, startPosition);
+            GoBackToCurrentPosition(currentPosition);
 
             builder.Remove(index, 1);
-            Console.Write(builder.ToString());
+            Console.Write(builder.ToString().Substring(index));
 
-            GoBackToCurrentPosition(index, startPosition);
+            GoBackToCurrentPosition(currentPosition);
+        }
+
+        private static void GoBackToCurrentPosition((int Left, int Top) currentPosition)
+        {
+            Console.SetCursorPosition(currentPosition.Left, currentPosition.Top);
         }
 
         private static void Delete(ref int index, ConsoleKeyInfo cki, StringBuilder builder)
@@ -191,8 +197,7 @@ namespace CustomReadLine
             builder.Insert(previousIndex, cki.KeyChar);
 
             var startPosition = GetStartPosition(previousIndex);
-            Console.SetCursorPosition(startPosition.left, startPosition.top);
-            Console.Write(builder.ToString());
+            Console.Write(builder.ToString().Substring(previousIndex));
 
             GoBackToCurrentPosition(index, startPosition);
         }
@@ -249,6 +254,11 @@ namespace CustomReadLine
             Console.Write(new string(Enumerable.Range(0, builder.Length).Select(o => ' ').ToArray()));
 
             Console.SetCursorPosition(startPosition.left, startPosition.top);
+        }
+
+        private static void ErasePrintFrom(StringBuilder builder, int index)
+        {
+            Console.Write(new string(Enumerable.Range(0, builder.Length - index).Select(o => ' ').ToArray()));
         }
     }
 }
