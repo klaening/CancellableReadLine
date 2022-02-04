@@ -6,6 +6,8 @@ namespace CustomReadLine
 {
     public static class XConsole
     {
+        private static (int left, int top) _currentPosition = (Console.CursorLeft, Console.CursorTop);
+        
         public static string CancellableReadLine(out bool isCancelled)
         {
             var cancelKey = ConsoleKey.Escape;
@@ -151,22 +153,27 @@ namespace CustomReadLine
 
         private static void BackSpace(ref int index, ConsoleKeyInfo cki, StringBuilder builder)
         {
-            LeftArrow(ref index, cki);
-            
-            var currentPosition = Console.GetCursorPosition();
-            ErasePrintFrom(builder, index);
+            index--;
 
-            GoBackToCurrentPosition(currentPosition);
+            if (Console.CursorLeft > 0)
+                Console.CursorLeft--;
+            else
+            {
+                Console.CursorTop--;
+                Console.CursorLeft = Console.BufferWidth - 1;
+            }
+            
+            _currentPosition = Console.GetCursorPosition();
 
             builder.Remove(index, 1);
-            Console.Write(builder.ToString().Substring(index));
+            Console.Write($"{builder.ToString().Substring(index)} ");
 
-            GoBackToCurrentPosition(currentPosition);
+            GoToPosition(_currentPosition);
         }
 
-        private static void GoBackToCurrentPosition((int Left, int Top) currentPosition)
+        private static void GoToPosition((int left, int top) position)
         {
-            Console.SetCursorPosition(currentPosition.Left, currentPosition.Top);
+            Console.SetCursorPosition(_currentPosition.left, _currentPosition.top);
         }
 
         private static void Delete(ref int index, ConsoleKeyInfo cki, StringBuilder builder)
